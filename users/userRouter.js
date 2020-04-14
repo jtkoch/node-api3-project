@@ -1,40 +1,79 @@
 const express = require('express');
 const users = require('./userDb');
+const posts = require('../posts/postDb');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  
+router.post('/', validateUser, (req, res) => {
+  users.insert(req.body)
+    .then((user) => {
+      res.status(201).json(user)
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
-router.post('/:id/posts', (req, res) => {
-  
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
+  users.insert(req.body)
+    .then(post => {
+      res.status(201).json(post)
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
 router.get('/', (req, res) => {
-  
+  users.get()
+    .then((user) => {
+      res.status(200).json(user)
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
-router.get('/:id', (req, res) => {
-  
+router.get('/:id', validateUserId, (req, res) => {
+  res.status(200).json(req.user)
 });
 
 router.get('/:id/posts', (req, res) => {
-  
+  users.getUserPosts(req.params.id)
+    .then((post) => {
+      res.status(200).json(post)
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
-router.delete('/:id', (req, res) => {
-  
+router.delete('/:id', validateUserId, (req, res) => {
+  users.remove(req.params.id)
+    .then(() => {
+      res.status(200).json({
+        message: "the user was deleted",
+      })
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
-router.put('/:id', (req, res) => {
-  
+router.put('/:id', validateUserId, validateUser, (req, res) => {
+  users.update(req.params,id, req.body)
+    .then((user) => {
+      res.status(200).json(user)
+    })
+    .catch((err) => {
+      next(err)
+    })
 });
 
 
 //custom middleware
 function validateUserId(req, res, next) {
-  users.findById(req.params.id)
+  users.getById(req.params.id)
     .then((user) => {
       if(user) {
         req.user = user
