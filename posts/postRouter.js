@@ -3,7 +3,7 @@ const posts = require('../posts/postDb');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   posts.get()
     .then((post) => {
       res.status(200).json(post)
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
   posts.getById(req.params.id)
     .then((post) => {
       res.status(200).json(post)
@@ -23,7 +23,7 @@ router.get('/:id', (req, res) => {
     })
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res, next) => {
   posts.remove(req.params.id)
     .then(() => {
         res.status(200).json({
@@ -35,7 +35,7 @@ router.delete('/:id', (req, res) => {
     })
 });
 
-router.put('/:id', validatePostId, (req, res) => {
+router.put('/:id', validatePostId, (req, res, next) => {
   posts.update(req.params.id, req.body)
     .then((post) => {
         res.status(200).json(post)

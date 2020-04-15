@@ -1,9 +1,10 @@
 const express = require('express');
 const users = require('./userDb');
+const posts = require('../posts/postDb');
 
 const router = express.Router();
 
-router.post('/', validateUser, (req, res) => {
+router.post('/', validateUser, (req, res, next) => {
   users.insert(req.body)
     .then((user) => {
       res.status(201).json(user)
@@ -13,9 +14,9 @@ router.post('/', validateUser, (req, res) => {
     })
 });
 
-router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
-  users.insert(req.body)
-    .then(post => {
+router.post('/:id/posts', validatePost, validateUserId, (req, res, next) => {
+  posts.insert({...req.body, user_id: req.params.id})
+    .then((post) => {
       res.status(201).json(post)
     })
     .catch((err) => {
@@ -23,7 +24,7 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
     })
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   users.get()
     .then((user) => {
       res.status(200).json(user)
@@ -33,7 +34,7 @@ router.get('/', (req, res) => {
     })
 });
 
-router.get('/:id', validateUserId, (req, res) => {
+router.get('/:id', validateUserId, (req, res, next) => {
   res.status(200).json(req.user)
 });
 
@@ -47,7 +48,7 @@ router.get('/:id/posts', (req, res) => {
     })
 });
 
-router.delete('/:id', validateUserId, (req, res) => {
+router.delete('/:id', validateUserId, (req, res, next) => {
   users.remove(req.params.id)
     .then(() => {
       res.status(200).json({
@@ -59,8 +60,8 @@ router.delete('/:id', validateUserId, (req, res) => {
     })
 });
 
-router.put('/:id', validateUserId, validateUser, (req, res) => {
-  users.update(req.params,id, req.body)
+router.put('/:id', validateUserId, validateUser, (req, res, next) => {
+  users.update(req.params.id, req.body)
     .then((user) => {
       res.status(200).json(user)
     })
