@@ -3,46 +3,40 @@ const posts = require('../posts/postDb');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  posts.get()
-    .then((post) => {
-      res.status(200).json(post)
-    })
-    .catch((err) => {
+router.get('/', async (req, res, next) => {
+  try {
+    const post = await posts.get()
+    res.status(200).json(post)
+  } catch(err) {
       next(err)
-    })
+  }
 });
 
-router.get('/:id', validatePostId, (req, res, next) => {
-  posts.getById(req.params.id)
-    .then((post) => {
-      res.status(200).json(post)
-    })
-    .catch((err) => {
+router.get('/:id', validatePostId, async (req, res, next) => {
+  try {
+    const post = await posts.getById(req.params.id)
+    res.status(200).json(post)
+  } catch(err) {
       next(err)
-    })
+  }
 });
 
-router.delete('/:id', validatePostId, (req, res, next) => {
-  posts.remove(req.params.id)
-    .then(() => {
-        res.status(200).json({
-          message: "The post was deleted",
-        })
-    })    
-    .catch((err) => {
+router.delete('/:id', validatePostId, async (req, res, next) => {
+  try {
+  const post = await posts.remove(req.params.id)
+  res.status(200).json(post)
+  } catch(err) {
       next(err)
-    })
+  }
 });
 
-router.put('/:id', validatePostId, (req, res, next) => {
-  posts.update(req.params.id, req.body)
-    .then((post) => {
-        res.status(200).json(post)
-    })    
-    .catch((err) => {
+router.put('/:id', validatePostId, async (req, res, next) => {
+  try {
+    const post = await posts.update(req.params.id, req.body)
+    res.status(200).json(post)
+  } catch(err) {
       next(err)
-    })
+  }
 });
 
 
