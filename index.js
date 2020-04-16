@@ -3,13 +3,15 @@ const cors = require("cors")
 const logger = require("./middleware/logger")
 const postRouter = require("./posts/postRouter")
 const userRouter = require("./users/userRouter")
+const welcomeRouter = require("./welcome/welcome-router")
 
 const server = express()
-const port = 8000
+const port = process.env.PORT || 8000
 
 server.use(express.json())
 server.use(cors())
 server.use(logger)
+server.use("/", welcomeRouter)
 server.use("/posts", postRouter)
 server.use("/users", userRouter)
 
@@ -27,5 +29,5 @@ server.use((err, req, res, next) => {
 })
 
 server.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`)
+  console.log(`\n*** Server is listening on http://localhost:${port} ***\n`)
 })
