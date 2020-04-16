@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
     })
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', validatePostId, (req, res, next) => {
   posts.getById(req.params.id)
     .then((post) => {
       res.status(200).json(post)
@@ -23,7 +23,7 @@ router.get('/:id', (req, res, next) => {
     })
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', validatePostId, (req, res, next) => {
   posts.remove(req.params.id)
     .then(() => {
         res.status(200).json({
@@ -45,17 +45,17 @@ router.put('/:id', validatePostId, (req, res, next) => {
     })
 });
 
-// custom middleware
 
+// custom middleware
 function validatePostId(req, res, next) {
-  posts.getById(req.parmams.id)
+  posts.getById(req.params.id)
     .then((postId) => {
       if(postId) {
         req.postId = postId
         next()
       } else {
-        res.status(500).json({
-          message: "Failed",
+        res.status(400).json({
+          message: "missing post data",
         })
       }
     })
