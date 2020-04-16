@@ -6,7 +6,7 @@ const userRouter = require("./users/userRouter")
 const welcomeRouter = require("./welcome/welcome-router")
 
 const server = express()
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 4000
 
 server.use(express.json())
 server.use(cors())
